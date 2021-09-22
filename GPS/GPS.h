@@ -10,45 +10,15 @@ ref class GPS : public UGV_module
 {
 
 public:
-	int connect(String^ hostName, int portNumber) override
-	{
-		// YOUR CODE HERE
-		return 1;
-	}
-	int setupSharedMemory() override
-	{
-		// YOUR CODE HERE
-		return 1;
-	}
-	int getData() override
-	{
-		// YOUR CODE HERE
-		return 1;
-	}
-	int checkData() override
-	{
-		// YOUR CODE HERE
-		return 1;
-	}
-	int sendDataToSharedMemory() override
-	{
-		// YOUR CODE HERE
-		return 1;
-	}
-	bool getShutdownFlag() override
-	{
-		// YOUR CODE HERE
-		return 1;
-	}
-	int setHeartbeat(bool heartbeat) override
-	{
-		// YOUR CODE HERE
-		return 1;
-	}
-	~GPS()
-	{
-		// YOUR CODE HERE
-	}
+	int connect(String^ hostName, int portNumber) override;
+	int setupSharedMemory() override;
+	int getData() override;
+	int checkData() override;
+	int sendDataToSharedMemory() override;
+	bool getShutdownFlag() override;
+	int setHeartbeat(bool heartbeat) override;
+	~GPS();
+	
 
 protected:
 	// YOUR CODE HERE (ADDITIONAL MEMBER VARIABLES THAT YOU MAY WANT TO ADD)
