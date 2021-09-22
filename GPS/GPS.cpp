@@ -7,7 +7,7 @@ int	GPS::connect(String^ hostName, int portNumber)
 }
 int GPS::setupSharedMemory() 
 {
-	// YOUR CODE HERE
+	// YOUR CODE HE
 	return 1;
 }
 int GPS::getData() 
