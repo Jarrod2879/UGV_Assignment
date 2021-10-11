@@ -63,8 +63,7 @@ ref class UGV_module
 		array<unsigned char>^ ReadData;		// Array to store sensor Data
 
 		SMObject* ProcessManagementData;	// Filled in setupSharedMemory(). For accessing PM shared Memory
-		SMObject* SensorData;				// Filled in setupSharedMemory(). For storing sensory data to shared Memory
-
+		SMObject* SensorData;
 };
 
 #endif 

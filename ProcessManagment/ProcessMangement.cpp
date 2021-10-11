@@ -34,7 +34,20 @@ TCHAR Units[10][20] = //
 int main()
 {
 	//start all 5 modules
+	SMObject PMObj(_TEXT("PMObj"), sizeof(ProcessManagement));
+
+	PMObj.SMCreate(); 
+	PMObj.SMAccess();
+
+	ProcessManagement* PMSMptr = (ProcessManagement*)PMObj.pData;
+
 	StartProcesses();
+	
+	while (1) {
+		PMSMptr->LifeCounter++;
+		Console::WriteLine("{0}", PMSMptr->LifeCounter);
+
+	}
 	return 0;
 }
 
