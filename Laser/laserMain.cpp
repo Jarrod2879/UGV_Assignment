@@ -10,7 +10,7 @@ using namespace System::Net;
 using namespace System::Text;
 
 int main()
-{
+{ 
 	// LMS151 port number must be 2111
 	int PortNumber = 2111;
 	// Pointer to TcpClent type object on managed heap
