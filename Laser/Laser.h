@@ -18,11 +18,12 @@ public:
 	bool getShutdownFlag() override;
 	int setHeartbeat(bool heartbeat) override;
 	~Laser();
+	int authLaser();
 
 
 protected:
 	// YOUR CODE HERE (ADDITIONAL MEMBER VARIABLES THAT YOU MAY WANT TO ADD)
-
+	
 };
 
 

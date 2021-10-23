@@ -17,7 +17,7 @@ int main()
 	myLaser.setupSharedMemory();
 
 	// LMS151 port number must be 2111
-	int PortNumber = 2111;
+	int PortNumber = 23000;
 	// Pointer to TcpClent type object on managed heap
 	TcpClient^ Client;
 	// arrays of unsigned chars to send and receive data
@@ -31,7 +31,7 @@ int main()
 	String^ ResponseData;
 
 	// Creat TcpClient object and connect to it
-	Client = gcnew TcpClient("192.168.5.8", PortNumber);
+	Client = gcnew TcpClient("192.168.1.200", PortNumber);
 	// Configure connection
 	Client->NoDelay = true;
 	Client->ReceiveTimeout = 500;//ms
@@ -50,6 +50,11 @@ int main()
 	// can use it to read and write
 	NetworkStream^ Stream = Client->GetStream();
 
+	if (myLaser.authLaser() != 1) {
+
+		return 0;
+
+	};
 
 	//Loop
 	while (!_kbhit())
@@ -69,7 +74,9 @@ int main()
 
 		myLaser.getData();
 
-		myLaser.setHeartbeat(false);
+		if (myLaser.setHeartbeat(false) == 0) {
+			break;
+		}
 	}
 
 	Stream->Close();

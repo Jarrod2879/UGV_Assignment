@@ -8,7 +8,10 @@ int main()
 
 		myGPS.getData();
 
-		myGPS.setHeartbeat(false);
+		if (myGPS.setHeartbeat(false) == 0) {
+			break;
+		};
+
 
 	}
 

@@ -55,7 +55,7 @@ int GPS::setHeartbeat(bool heartbeat)
 	else {
 		counter++;
 		if(counter > 10000){
-			Console::WriteLine("An Error has occured");
+			//Console::WriteLine("An Error has occured");
 			return 0;
 		}
 	}
