@@ -23,6 +23,9 @@ you see fit.
 #include <SMFcn.h>
 #using <System.dll>
 
+#include "../include/smstructs.h"
+#include "../include/SMObject.h"
+
 using namespace System;
 using namespace System::Net::Sockets;
 using namespace System::Net;

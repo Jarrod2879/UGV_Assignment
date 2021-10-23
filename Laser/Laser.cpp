@@ -1,16 +1,12 @@
-#include "GPS.h"
+#include "Laser.h"
 #include <tchar.h>
-#include "../include/SMObject.h"
-#include "../include/smstructs.h"
-#include "../include/UGV_module.h"
 
-
-int	GPS::connect(String^ hostName, int portNumber) 
+int	Laser::connect(String^ hostName, int portNumber)
 {
 	// YOUR CODE HERE
 	return 1;
 }
-int GPS::setupSharedMemory() 
+int Laser::setupSharedMemory()
 {
 	ProcessManagementData = new SMObject(_TEXT("PMObj"), sizeof(ProcessManagement));
 
@@ -19,24 +15,24 @@ int GPS::setupSharedMemory()
 	// YOUR CODE HERE
 	return 1;
 }
-int GPS::getData() 
+int Laser::getData()
 {
 	ProcessManagement* PMptr = (ProcessManagement*)ProcessManagementData->pData;
 	Console::WriteLine("{0}", PMptr->LifeCounter);
 	// YOUR CODE HERE
 	return 1;
 }
-int GPS::checkData() 
+int Laser::checkData()
 {
 	// YOUR CODE HERE
 	return 1;
 }
-int GPS::sendDataToSharedMemory() 
+int Laser::sendDataToSharedMemory()
 {
 	// YOUR CODE HERE
 	return 1;
 }
-bool GPS::getShutdownFlag() 
+bool Laser::getShutdownFlag()
 {
 	// YOUR CODE HERE
 	return 1;
@@ -45,23 +41,23 @@ bool GPS::getShutdownFlag()
 
 int counter = 0;
 
-int GPS::setHeartbeat(bool heartbeat) 
+int Laser::setHeartbeat(bool heartbeat)
 {
 	ProcessManagement* PMptr = (ProcessManagement*)ProcessManagementData->pData; // YOUR CODE HERE
-	if (PMptr->Heartbeat.Flags.GPS == 1) {
+	if (PMptr->Heartbeat.Flags.Laser == 1) {
 		counter = 0;
-		PMptr->Heartbeat.Flags.GPS = 0;
+		PMptr->Heartbeat.Flags.Laser = 0;
 	}
 	else {
 		counter++;
-		if(counter > 10000){
+		if (counter > 10000) {
 			Console::WriteLine("An Error has occured");
 			return 0;
 		}
 	}
 	return 1;
 }
-GPS::~GPS()
+Laser::~Laser()
 {
 	// YOUR CODE HERE
 }

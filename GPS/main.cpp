@@ -7,6 +7,9 @@ int main()
 	while (1) {
 
 		myGPS.getData();
+
+		myGPS.setHeartbeat(false);
+
 	}
 
 	return 0;

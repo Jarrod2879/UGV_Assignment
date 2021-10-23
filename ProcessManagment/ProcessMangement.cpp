@@ -9,16 +9,19 @@
 
 #include "SMStructs.h"
 #include "SMObject.h"
+#include "../include/smstructs.h"
+#include "../include/SMObject.h"
 
 using namespace System;
 using namespace System::Net::Sockets;
 using namespace System::Net;
 using namespace System::Text;
 
-#define NUM_UNITS 3
+#define NUM_UNITS 4
 
 bool IsProcessRunning(const char* processName);
 void StartProcesses();
+void checkHeartbeats(ProcessManagement* PMSMptr);
 
 //defining start up sequence
 TCHAR Units[10][20] = //
@@ -26,8 +29,9 @@ TCHAR Units[10][20] = //
 	TEXT("GPS.exe"),
 	TEXT("Camera.exe"),
 	TEXT("Display.exe"),
-	TEXT("VehicleControl.exe"),
 	TEXT("LASER.exe"),
+	TEXT("VehicleControl.exe"),
+	
 	
 };
 
@@ -45,8 +49,8 @@ int main()
 	
 	while (1) {
 		PMSMptr->LifeCounter++;
-		Console::WriteLine("{0}", PMSMptr->LifeCounter);
-
+		checkHeartbeats(PMSMptr);
+		if (_kbhit()) break;
 	}
 	return 0;
 }
@@ -91,6 +95,23 @@ void StartProcesses()
 			}
 			std::cout << "Started: " << Units[i] << std::endl;
 			Sleep(100);
+		}
+	}
+}
+
+int counter = 0;
+
+void checkHeartbeats(ProcessManagement* PMSMptr)
+{
+	if (PMSMptr->Heartbeat.Flags.GPS == 0) {
+		PMSMptr->Heartbeat.Flags.GPS = 1;
+		counter = 0;
+
+	}
+	else {
+		counter++;
+		if (counter > 100000) {
+			Console::WriteLine("An Error has occured");
 		}
 	}
 }
