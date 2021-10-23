@@ -2,6 +2,7 @@
 #using <System.dll>
 
 #include <conio.h>//_kbhit()
+#include "Laser.h"
 
 
 using namespace System;
@@ -11,6 +12,10 @@ using namespace System::Text;
 
 int main()
 { 
+	Laser myLaser;
+
+	myLaser.setupSharedMemory();
+
 	// LMS151 port number must be 2111
 	int PortNumber = 2111;
 	// Pointer to TcpClent type object on managed heap
@@ -61,6 +66,10 @@ int main()
 		ResponseData = System::Text::Encoding::ASCII->GetString(ReadData);
 		// Print the received string on the screen
 		Console::WriteLine(ResponseData);
+
+		myLaser.getData();
+
+		myLaser.setHeartbeat(false);
 	}
 
 	Stream->Close();
