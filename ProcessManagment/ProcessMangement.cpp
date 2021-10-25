@@ -17,7 +17,7 @@ using namespace System::Net::Sockets;
 using namespace System::Net;
 using namespace System::Text;
 
-#define NUM_UNITS 4
+#define NUM_UNITS 2
 
 bool IsProcessRunning(const char* processName);
 void StartProcesses();
@@ -27,8 +27,8 @@ void checkHeartbeats(ProcessManagement* PMSMptr);
 TCHAR Units[10][20] = //
 {
 	TEXT("GPS.exe"),
-	TEXT("Camera.exe"),
-	TEXT("Display.exe"),
+	//TEXT("Camera.exe"),
+	//TEXT("Display.exe"),
 	TEXT("LASER.exe"),
 	TEXT("VehicleControl.exe"),
 	

@@ -50,32 +50,48 @@ int main()
 	// can use it to read and write
 	NetworkStream^ Stream = Client->GetStream();
 
-	if (myLaser.authLaser() != 1) {
+	//Authentication
+	String^ Auth = gcnew String("5255853\n");
 
-		return 0;
+	String^ AuthMessage = gcnew String("OK\n");
 
-	};
+	array<unsigned char>^ sendAuth = System::Text::Encoding::ASCII->GetBytes(Auth);
+
+	Stream->Write(sendAuth, 0, sendAuth->Length);
+
+	System::Threading::Thread::Sleep(10);
+
+	array<unsigned char>^ ReadAuth = gcnew array<unsigned char>(16);
+
+	Stream->Read(ReadAuth, 0, ReadAuth->Length);
+
+	String^ AuthResponse = System::Text::Encoding::ASCII->GetString(ReadAuth);
+
+	//Console::WriteLine(AuthResponse);
 
 	//Loop
 	while (!_kbhit())
 	{
-		// Write command asking for data
-		Stream->WriteByte(0x02);
-		Stream->Write(SendData, 0, SendData->Length);
-		Stream->WriteByte(0x03);
-		// Wait for the server to prepare the data, 1 ms would be sufficient, but used 10 ms
-		System::Threading::Thread::Sleep(10);
-		// Read the incoming data
-		Stream->Read(ReadData, 0, ReadData->Length);
-		// Convert incoming data from an array of unsigned char bytes to an ASCII string
-		ResponseData = System::Text::Encoding::ASCII->GetString(ReadData);
-		// Print the received string on the screen
-		Console::WriteLine(ResponseData);
-
-		//myLaser.getData();
-
 		if (myLaser.setHeartbeat(false) == 0) {
-			break;
+			return 0;
+		
+		}
+		else {
+			// Write command asking for data
+			Stream->WriteByte(0x02);
+			Stream->Write(SendData, 0, SendData->Length);
+			Stream->WriteByte(0x03);
+			// Wait for the server to prepare the data, 1 ms would be sufficient, but used 10 ms
+			System::Threading::Thread::Sleep(10);
+			// Read the incoming data
+			Stream->Read(ReadData, 0, ReadData->Length);
+			// Convert incoming data from an array of unsigned char bytes to an ASCII string
+			ResponseData = System::Text::Encoding::ASCII->GetString(ReadData);
+			// Print the received string on the screen
+			Console::WriteLine(ResponseData);
+
+			//myLaser.getData();
+
 		}
 	}
 

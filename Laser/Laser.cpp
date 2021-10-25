@@ -17,7 +17,7 @@ int Laser::setupSharedMemory()
 }
 int Laser::getData()
 {
-	
+	return 1;
 }
 int Laser::checkData()
 {
@@ -47,8 +47,8 @@ int Laser::setHeartbeat(bool heartbeat)
 	}
 	else {
 		counter++;
-		if (counter > 10000) {
-			Console::WriteLine("An Error has occured");
+		if (counter > 100) {
+			//Console::WriteLine("An Error has occured");
 			return 0;
 		}
 	}
@@ -61,8 +61,10 @@ Laser::~Laser()
 
 int Laser::authLaser()
 {
-	String^ Auth = gcnew String("5255853\n");
 	
+
+	String^ Auth = gcnew String("5255853\n");
+
 	String^ AuthMessage = gcnew String("OK\n");
 
 	array<unsigned char>^ sendAuth = System::Text::Encoding::ASCII->GetBytes(Auth);
@@ -70,7 +72,7 @@ int Laser::authLaser()
 	Stream->Write(sendAuth, 0, sendAuth->Length);
 
 	System::Threading::Thread::Sleep(10);
-	
+
 	Stream->Read(ReadData, 0, ReadData->Length);
 
 	String^ AuthResponse = System::Text::Encoding::ASCII->GetString(ReadData);
