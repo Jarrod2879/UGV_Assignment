@@ -17,10 +17,7 @@ int Laser::setupSharedMemory()
 }
 int Laser::getData()
 {
-	ProcessManagement* PMptr = (ProcessManagement*)ProcessManagementData->pData;
-	Console::WriteLine("{0}", PMptr->LifeCounter);
-	// YOUR CODE HERE
-	return 1;
+	
 }
 int Laser::checkData()
 {

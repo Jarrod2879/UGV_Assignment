@@ -46,7 +46,7 @@ int main()
 	SendData = System::Text::Encoding::ASCII->GetBytes(AskScan);
 
 
-	// Get the network streab object associated with clien so we 
+	// Get the network streab object associated with client so we 
 	// can use it to read and write
 	NetworkStream^ Stream = Client->GetStream();
 
@@ -72,7 +72,7 @@ int main()
 		// Print the received string on the screen
 		Console::WriteLine(ResponseData);
 
-		myLaser.getData();
+		//myLaser.getData();
 
 		if (myLaser.setHeartbeat(false) == 0) {
 			break;
