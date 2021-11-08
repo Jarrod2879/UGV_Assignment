@@ -13,6 +13,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Display", "Display\Display.
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Laser", "Laser\Laser.vcxproj", "{7CC45479-F731-4453-A63C-EF8F13C56765}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UGV", "UGV\UGV.vcxproj", "{E458D39B-36A0-4010-B8CD-7A13C43D47B6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -61,6 +63,14 @@ Global
 		{7CC45479-F731-4453-A63C-EF8F13C56765}.Release|x64.Build.0 = Release|x64
 		{7CC45479-F731-4453-A63C-EF8F13C56765}.Release|x86.ActiveCfg = Release|Win32
 		{7CC45479-F731-4453-A63C-EF8F13C56765}.Release|x86.Build.0 = Release|Win32
+		{E458D39B-36A0-4010-B8CD-7A13C43D47B6}.Debug|x64.ActiveCfg = Debug|x64
+		{E458D39B-36A0-4010-B8CD-7A13C43D47B6}.Debug|x64.Build.0 = Debug|x64
+		{E458D39B-36A0-4010-B8CD-7A13C43D47B6}.Debug|x86.ActiveCfg = Debug|Win32
+		{E458D39B-36A0-4010-B8CD-7A13C43D47B6}.Debug|x86.Build.0 = Debug|Win32
+		{E458D39B-36A0-4010-B8CD-7A13C43D47B6}.Release|x64.ActiveCfg = Release|x64
+		{E458D39B-36A0-4010-B8CD-7A13C43D47B6}.Release|x64.Build.0 = Release|x64
+		{E458D39B-36A0-4010-B8CD-7A13C43D47B6}.Release|x86.ActiveCfg = Release|Win32
+		{E458D39B-36A0-4010-B8CD-7A13C43D47B6}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

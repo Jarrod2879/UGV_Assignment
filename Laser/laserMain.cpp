@@ -4,17 +4,36 @@
 #include <conio.h>//_kbhit()
 #include "Laser.h"
 
+#include <iostream>
+#include <stdio.h>
+#include <conio.h>
+#include <fstream>
+#include <cstring>
+#include <string>
+#include <sstream>
+#include <Windows.h>
+
 
 using namespace System;
 using namespace System::Net::Sockets;
 using namespace System::Net;
 using namespace System::Text;
 
+
+#define PI 3.1416
+
 int main()
 { 
 	Laser myLaser;
 
 	myLaser.setupSharedMemory();
+
+	SMObject LASERObj(_TEXT("LASERObj"), sizeof(SM_Laser));
+
+	LASERObj.SMCreate();
+	LASERObj.SMAccess();
+
+	SM_Laser* laser = (SM_Laser*)LASERObj.pData;
 
 	// LMS151 port number must be 2111
 	int PortNumber = 23000;
@@ -23,6 +42,7 @@ int main()
 	// arrays of unsigned chars to send and receive data
 	array<unsigned char>^ SendData;
 	array<unsigned char>^ ReadData;
+	char RxData[2500];
 	// String command to ask for Channel 1 analogue voltage from the PLC
 	// These command are available on Galil RIO47122 command reference manual
 	// available online
@@ -90,8 +110,8 @@ int main()
 			// Print the received string on the screen
 			//Console::WriteLine(ResponseData);
 
-			//data conversion variables
-			array<System::String^>^ Fragments = nullptr;
+			//data conversion attempt 1
+			/*array<System::String^>^ Fragments = nullptr;
 			double StartAngle;
 			double Resolution;
 			int NumRanges;
@@ -118,8 +138,59 @@ int main()
 			Console::WriteLine("\t[{0,10:F3}, {1,10:F3}]", RangeX[360], RangeY[360]);
 
 			Console::WriteLine("");
-
+			*/
 			//myLaser.getData();
+
+			//data conversion attempt 2
+
+			for (int i = 0; i < 2500; i++)
+				RxData[i] = ReadData[i];
+
+			std::string ScanResp = RxData;
+			std::istringstream is(ScanResp);
+			std::string Fragments;
+			std::string Resol;
+			std::string Range[361];
+			double conRange[361];
+			double numPoints;
+			int count = 0;
+			double resolution;
+			double startAngle;
+
+			for (int i = 0; i < 26; i++) {
+				is >> Fragments;
+				if (i == 23) {
+					is >> std::hex >> startAngle;
+				}
+				else if (i == 24) {
+					is >> std::hex >> resolution;
+					const char* res = Resol.c_str();
+					resolution = std::strtol(res, NULL, 16);
+					resolution = resolution / 10000;
+				}
+				else if (i == 25) {
+					is >> std::hex >> numPoints;
+				}
+			}
+
+			
+			for (int i = 0; i < numPoints; i++) {
+				//Grab hex data
+				is >> std::hex >> Range[i];
+				//Convert to decimal
+				const char* conv = Range[i].c_str();
+				conRange[i] = std::strtol(conv, NULL, 16);
+
+				laser->x[count] = conRange[i] * (cos(180 - (resolution * count) * (PI / 180)));
+				laser->y[count] = conRange[i] * (sin(180 - (resolution * count) * (PI / 180)));
+				count++;
+				System::Threading::Thread::Sleep(100);
+				std::cout << "x: " << laser->x[count] << " y: " << laser->y[count] << std::endl;
+			}
+
+			if (count > 361) {
+				count = 0;
+			}
 
 		}
 	}

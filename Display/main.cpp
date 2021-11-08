@@ -38,6 +38,13 @@
 #include "Messages.hpp"
 #include "HUD.hpp"
 
+
+#include "SMStructs.h"
+#include "SMFcn.h"
+#include "SMObject.h"
+
+
+
 void display();
 void reshape(int width, int height);
 void idle();
@@ -233,6 +240,43 @@ void idle() {
 	if (vehicle != NULL) {
 		vehicle->update(speed, steering, elapsedTime);
 	}
+
+	SMObject PMObj(TEXT("PMObj"), sizeof(ProcessManagement));
+	double TimeStamp;
+	__int64 Frequency, Counter;
+	int Shutdown = 0x00;
+
+	QueryPerformanceFrequency((LARGE_INTEGER*)&Frequency);
+
+	PMObj.SMCreate();
+	PMObj.SMAccess();
+
+	ProcessManagement* PMData = (ProcessManagement*)PMObj.pData;
+
+	QueryPerformanceFrequency((LARGE_INTEGER*)&Counter);
+	TimeStamp = (double)Counter / (double)Frequency * 1000;
+	if (PMData->Heartbeat.Flags.OpenGL == 0) {
+		PMData->ShutdownCounter++;
+	}
+	if (PMData->Heartbeat.Flags.OpenGL == 1) {
+
+		PMData->Heartbeat.Flags.OpenGL = 0;
+		PMData->ShutdownCounter = 0;
+	}
+
+
+
+	//Console::WriteLine("Camera Time Stamp : {0,12:F3} {1,12:X2}", TimeStamp, Shutdown);
+	Console::WriteLine("{0}", PMData->ShutdownCounter);
+	//Console::WriteLine(PMData->Shutdown.Status);
+	//Console::WriteLine("{0}", PMData->LifeCounter);
+	//Thread::Sleep(25);
+	if (PMData->ShutdownCounter > 100)
+		exit(0);
+	if (PMData->Shutdown.Status == 1)
+		exit(0);
+	if (_kbhit())
+		exit(0);
 
 	display();
 

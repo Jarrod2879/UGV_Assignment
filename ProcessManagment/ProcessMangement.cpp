@@ -17,7 +17,7 @@ using namespace System::Net::Sockets;
 using namespace System::Net;
 using namespace System::Text;
 
-#define NUM_UNITS 3
+#define NUM_UNITS 5
 
 bool IsProcessRunning(const char* processName);
 void StartProcesses();
@@ -28,9 +28,9 @@ TCHAR Units[10][20] = //
 {
 	TEXT("GPS.exe"),
 	TEXT("Camera.exe"),
-	//TEXT("Display.exe"),
+	TEXT("Display.exe"),
 	TEXT("LASER.exe"),
-	TEXT("VehicleControl.exe"),
+	TEXT("UGV.exe"),
 	
 	
 };
@@ -105,6 +105,8 @@ void StartProcesses()
 int gpscounter = 0;
 int lasercounter = 0;
 int cameracounter = 0;
+int displaycounter = 0;
+int ugvcounter = 0;
 
 void checkHeartbeats(ProcessManagement* PMSMptr)
 {
@@ -117,7 +119,8 @@ void checkHeartbeats(ProcessManagement* PMSMptr)
 	else {
 		gpscounter++;
 		if (gpscounter > 100000) {
-			Console::WriteLine("An Error has occured");
+			Console::WriteLine("An Error has occured, Attempting to Restart");
+			StartProcesses();
 		}
 	}
 
@@ -132,6 +135,7 @@ void checkHeartbeats(ProcessManagement* PMSMptr)
 		if (lasercounter > 10000) {
 			//PMSMptr->Shutdown.Status = 1;
 			//exit(0);
+			//Console::WriteLine("{0}", lasercounter);
 		}
 	}
 
@@ -144,8 +148,36 @@ void checkHeartbeats(ProcessManagement* PMSMptr)
 	else {
 		cameracounter++;
 		if (cameracounter > 10000) {
-			PMSMptr->Shutdown.Status = 1;
-			exit(0);
+			//PMSMptr->Shutdown.Status = 1;
+			//exit(0);
+		}
+	}
+
+	//Display
+	if (PMSMptr->Heartbeat.Flags.OpenGL == 0) {
+		PMSMptr->Heartbeat.Flags.OpenGL = 1;
+		displaycounter = 0;
+
+	}
+	else {
+		displaycounter++;
+		if (displaycounter > 100000) {
+			Console::WriteLine("An Error has occured, Attempting to Restart");
+			StartProcesses();
+		}
+	}
+
+	//UGV
+	if (PMSMptr->Heartbeat.Flags.VehicleControl == 0) {
+		PMSMptr->Heartbeat.Flags.VehicleControl = 1;
+		ugvcounter = 0;
+
+	}
+	else {
+		ugvcounter++;
+		if (ugvcounter > 100000) {
+			Console::WriteLine("An Error has occured, Attempting to Restart");
+			StartProcesses();
 		}
 	}
 

@@ -87,8 +87,9 @@ int main()
 
 		}
 
-		
-
+		if (_kbhit()) {
+			exit(0);
+		}
 		
 
 	}

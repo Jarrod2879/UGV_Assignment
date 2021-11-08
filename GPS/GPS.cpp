@@ -62,6 +62,11 @@ int GPS::setHeartbeat(bool heartbeat)
 		PMptr->Heartbeat.Flags.GPS = 0;
 		PMptr->ShutdownCounter = 0;
 	}
+
+	if (PMptr->ShutdownCounter > 100)
+		exit(0);
+	if (PMptr->Shutdown.Status == 1)
+		exit(0);
 	return 1;
 }
 GPS::~GPS()
