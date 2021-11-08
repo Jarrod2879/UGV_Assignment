@@ -52,7 +52,7 @@ struct UnitFlags
 union ExecFlags
 {
 	UnitFlags Flags;
-	unsigned short Status;
+	int Status;
 };
 
 struct ProcessManagement
@@ -60,6 +60,7 @@ struct ProcessManagement
 	ExecFlags Heartbeat;
 	ExecFlags Shutdown;
 	long int LifeCounter;
+	int ShutdownCounter;
 };
 
 #define NONCRITICALMASK 0xff	//0 011 0000

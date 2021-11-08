@@ -1,37 +1,35 @@
-#include "Laser.h"
+#include "Camera.h"
 #include <tchar.h>
 
-int	Laser::connect(String^ hostName, int portNumber)
+int	Camera::connect(String^ hostName, int portNumber)
 {
 	// YOUR CODE HERE
 	return 1;
 }
-int Laser::setupSharedMemory()
+int Camera::setupSharedMemory()
 {
 	ProcessManagementData = new SMObject(_TEXT("PMObj"), sizeof(ProcessManagement));
 
 	ProcessManagementData->SMAccess();
 
-
-
 	// YOUR CODE HERE
 	return 1;
 }
-int Laser::getData()
+int Camera::getData()
 {
 	return 1;
 }
-int Laser::checkData()
+int Camera::checkData()
 {
 	// YOUR CODE HERE
 	return 1;
 }
-int Laser::sendDataToSharedMemory()
+int Camera::sendDataToSharedMemory()
 {
 	// YOUR CODE HERE
 	return 1;
 }
-bool Laser::getShutdownFlag()
+bool Camera::getShutdownFlag()
 {
 	// YOUR CODE HERE
 	return 1;
@@ -40,15 +38,12 @@ bool Laser::getShutdownFlag()
 
 int counter = 0;
 
-int Laser::setHeartbeat(bool heartbeat)
+int Camera::setHeartbeat(bool heartbeat)
 {
 	ProcessManagement* PMptr = (ProcessManagement*)ProcessManagementData->pData; // YOUR CODE HERE
 	if (PMptr->Heartbeat.Flags.Laser == 1) {
 		counter = 0;
 		PMptr->Heartbeat.Flags.Laser = 0;
-	}
-	else if (PMptr->Shutdown.Status == 1) {
-		return 0;
 	}
 	else {
 		counter++;
@@ -59,36 +54,11 @@ int Laser::setHeartbeat(bool heartbeat)
 	}
 	return 1;
 }
-Laser::~Laser()
+Camera::~Camera()
 {
 	// YOUR CODE HERE
 }
 
-int Laser::authLaser()
-{
-	
-
-	String^ Auth = gcnew String("5255853\n");
-
-	String^ AuthMessage = gcnew String("OK\n");
-
-	array<unsigned char>^ sendAuth = System::Text::Encoding::ASCII->GetBytes(Auth);
-
-	Stream->Write(sendAuth, 0, sendAuth->Length);
-
-	System::Threading::Thread::Sleep(10);
-
-	Stream->Read(ReadData, 0, ReadData->Length);
-
-	String^ AuthResponse = System::Text::Encoding::ASCII->GetString(ReadData);
-
-	if (AuthResponse == AuthMessage) {
-		return 1;
-	}
-	else {
-		return 0;
-	}
-}
 
 
 unsigned long CRC32Value(int i)

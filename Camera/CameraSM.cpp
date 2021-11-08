@@ -1,37 +1,35 @@
-#include "Laser.h"
+#include "CameraClass.h"
 #include <tchar.h>
 
-int	Laser::connect(String^ hostName, int portNumber)
+int	CameraSM::connect(String^ hostName, int portNumber)
 {
 	// YOUR CODE HERE
 	return 1;
 }
-int Laser::setupSharedMemory()
+int CameraSM::setupSharedMemory()
 {
 	ProcessManagementData = new SMObject(_TEXT("PMObj"), sizeof(ProcessManagement));
 
 	ProcessManagementData->SMAccess();
 
-
-
 	// YOUR CODE HERE
 	return 1;
 }
-int Laser::getData()
+int CameraSM::getData()
 {
 	return 1;
 }
-int Laser::checkData()
+int CameraSM::checkData()
 {
 	// YOUR CODE HERE
 	return 1;
 }
-int Laser::sendDataToSharedMemory()
+int CameraSM::sendDataToSharedMemory()
 {
 	// YOUR CODE HERE
 	return 1;
 }
-bool Laser::getShutdownFlag()
+bool CameraSM::getShutdownFlag()
 {
 	// YOUR CODE HERE
 	return 1;
@@ -40,55 +38,41 @@ bool Laser::getShutdownFlag()
 
 int counter = 0;
 
-int Laser::setHeartbeat(bool heartbeat)
+int CameraSM::setHeartbeat(bool heartbeat)
 {
-	ProcessManagement* PMptr = (ProcessManagement*)ProcessManagementData->pData; // YOUR CODE HERE
-	if (PMptr->Heartbeat.Flags.Laser == 1) {
+	SMObject PMObj(TEXT("ProcessManagement"), sizeof(ProcessManagement));
+	double TimeStamp;
+	__int64 Frequency, Counter;
+	int Shutdown = 0x00;
+
+	QueryPerformanceFrequency((LARGE_INTEGER*)&Frequency);
+
+	PMObj.SMCreate();
+	PMObj.SMAccess();
+
+	ProcessManagement* PMptr = (ProcessManagement*)PMObj.pData;
+
+	QueryPerformanceFrequency((LARGE_INTEGER*)&Counter);
+	TimeStamp = (double)Counter / (double)Frequency * 1000;
+
+	if (PMptr->Heartbeat.Flags.Camera == 1) {
 		counter = 0;
-		PMptr->Heartbeat.Flags.Laser = 0;
-	}
-	else if (PMptr->Shutdown.Status == 1) {
-		return 0;
+		PMptr->Heartbeat.Flags.Camera = 0;
 	}
 	else {
 		counter++;
 		if (counter > 100) {
 			//Console::WriteLine("An Error has occured");
-			return 0;
+			exit(0);
 		}
 	}
-	return 1;
 }
-Laser::~Laser()
+CameraSM::~CameraSM()
 {
 	// YOUR CODE HERE
 }
 
-int Laser::authLaser()
-{
-	
 
-	String^ Auth = gcnew String("5255853\n");
-
-	String^ AuthMessage = gcnew String("OK\n");
-
-	array<unsigned char>^ sendAuth = System::Text::Encoding::ASCII->GetBytes(Auth);
-
-	Stream->Write(sendAuth, 0, sendAuth->Length);
-
-	System::Threading::Thread::Sleep(10);
-
-	Stream->Read(ReadData, 0, ReadData->Length);
-
-	String^ AuthResponse = System::Text::Encoding::ASCII->GetString(ReadData);
-
-	if (AuthResponse == AuthMessage) {
-		return 1;
-	}
-	else {
-		return 0;
-	}
-}
 
 
 unsigned long CRC32Value(int i)

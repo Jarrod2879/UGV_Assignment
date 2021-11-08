@@ -22,7 +22,8 @@ int GPS::setupSharedMemory()
 int GPS::getData() 
 {
 	ProcessManagement* PMptr = (ProcessManagement*)ProcessManagementData->pData;
-	Console::WriteLine("{0}", PMptr->LifeCounter);
+	//Console::WriteLine("{0}", PMptr->LifeCounter);
+	
 	// YOUR CODE HERE
 	return 1;
 }
@@ -38,26 +39,28 @@ int GPS::sendDataToSharedMemory()
 }
 bool GPS::getShutdownFlag() 
 {
-	// YOUR CODE HERE
+	ProcessManagement* PMptr = (ProcessManagement*)ProcessManagementData->pData;
+
+	if (PMptr->Shutdown.Status == 1 || PMptr->ShutdownCounter > 1000) {
+		exit(0);
+	}
 	return 1;
 }
 
 
-int counter = 0;
 
-int GPS::setHeartbeat(bool heartbeat) 
+int GPS::setHeartbeat(bool heartbeat)
 {
 	ProcessManagement* PMptr = (ProcessManagement*)ProcessManagementData->pData; // YOUR CODE HERE
-	if (PMptr->Heartbeat.Flags.GPS == 1) {
-		counter = 0;
-		PMptr->Heartbeat.Flags.GPS = 0;
+	if (PMptr->Heartbeat.Flags.GPS == 0) {
+
+		PMptr->ShutdownCounter++;
 	}
-	else {
-		counter++;
-		if(counter > 1000){
-			//Console::WriteLine("An Error has occured");
-			return 0;
-		}
+
+	if (PMptr->Heartbeat.Flags.GPS == 1) {
+
+		PMptr->Heartbeat.Flags.GPS = 0;
+		PMptr->ShutdownCounter = 0;
 	}
 	return 1;
 }

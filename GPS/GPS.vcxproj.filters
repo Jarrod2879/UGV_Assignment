@@ -26,10 +26,10 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\SMObject.cpp">
+    <ClCompile Include="GPS.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GPS.cpp">
+    <ClCompile Include="..\SMObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -73,7 +73,7 @@ int main()
 	while (!_kbhit())
 	{
 		if (myLaser.setHeartbeat(false) == 0) {
-			return 0;
+			exit(0);
 		
 		}
 		else {
@@ -88,7 +88,36 @@ int main()
 			// Convert incoming data from an array of unsigned char bytes to an ASCII string
 			ResponseData = System::Text::Encoding::ASCII->GetString(ReadData);
 			// Print the received string on the screen
-			Console::WriteLine(ResponseData);
+			//Console::WriteLine(ResponseData);
+
+			//data conversion variables
+			array<System::String^>^ Fragments = nullptr;
+			double StartAngle;
+			double Resolution;
+			int NumRanges;
+			array<double>^ Range;
+			array<double>^ RangeX;
+			array<double>^ RangeY;
+
+			Fragments = ResponseData->Split(' ');
+			StartAngle = System::Convert::ToInt32(Fragments[23], 16);
+			Resolution = System::Convert::ToInt32(Fragments[24], 16) / 10000.0;
+			NumRanges = System::Convert::ToInt32(Fragments[25], 16);
+
+			Console::Write("{0,10:F3} {1,10:F3} {2}", StartAngle, Resolution, NumRanges);
+			Range = gcnew array<double>(NumRanges);
+			RangeX = gcnew array<double>(NumRanges);
+			RangeY = gcnew array<double>(NumRanges);
+			for (int i = 0; i < NumRanges; i++) {
+				Range[i] = System::Convert::ToInt32(Fragments[26 + i], 16);
+				//Console::Write("{0,10:F3}", Range[i]);
+				RangeX[i] = Range[i] * Math::Sin(i * Resolution * Math::PI / 180.0);
+				RangeY[i] = -Range[i] * Math::Cos(i * Resolution * Math::PI / 180.0);
+			
+			}
+			Console::WriteLine("\t[{0,10:F3}, {1,10:F3}]", RangeX[360], RangeY[360]);
+
+			Console::WriteLine("");
 
 			//myLaser.getData();
 

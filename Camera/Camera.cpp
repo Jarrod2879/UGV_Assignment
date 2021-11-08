@@ -11,6 +11,8 @@
 
 #include <turbojpeg.h>
 
+#include "CameraClass.h"
+
 void display();
 void idle();
 
@@ -22,6 +24,7 @@ zmq::socket_t subscriber(context, ZMQ_SUB);
 
 int main(int argc, char** argv)
 {
+	
 	//Define window size
 	const int WINDOW_WIDTH = 800;
 	const int WINDOW_HEIGHT = 600;
@@ -35,13 +38,17 @@ int main(int argc, char** argv)
 
 	glutDisplayFunc(display);
 	glutIdleFunc(idle);
+	Console::WriteLine("Hi 2");
 	glGenTextures(1, &tex);
+	
 
 	//Socket to talk to server
 	subscriber.connect("tcp://192.168.1.200:26000");
 	subscriber.setsockopt(ZMQ_SUBSCRIBE, "", 0);
-
+	
 	glutMainLoop();
+	
+	
 
 	return 1;
 }
@@ -49,23 +56,23 @@ int main(int argc, char** argv)
 
 void display()
 {
-	//Set camera as gl texture
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, tex);
+		//Set camera as gl texture
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glEnable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, tex);
 
-	//Map Camera to window
-	glBegin(GL_QUADS);
-	glTexCoord2f(0, 1); glVertex2f(-1, -1);
-	glTexCoord2f(1, 1); glVertex2f(1, -1);
-	glTexCoord2f(1, 0); glVertex2f(1, 1);
-	glTexCoord2f(0, 0); glVertex2f(-1, 1);
-	glEnd();
-	glutSwapBuffers();
+		//Map Camera to window
+		glBegin(GL_QUADS);
+		glTexCoord2f(0, 1); glVertex2f(-1, -1);
+		glTexCoord2f(1, 1); glVertex2f(1, -1);
+		glTexCoord2f(1, 0); glVertex2f(1, 1);
+		glTexCoord2f(0, 0); glVertex2f(-1, 1);
+		glEnd();
+		glutSwapBuffers();
+	
 }
 void idle()
 {
-
 	//receive from zmq
 	zmq::message_t update;
 	if (subscriber.recv(&update, ZMQ_NOBLOCK))
@@ -84,6 +91,8 @@ void idle()
 		tjDecompress2(_jpegDecompressor, _compressedImage, _jpegSize, buffer, width, 0/*pitch*/, height, TJPF_RGB, TJFLAG_FASTDCT);
 		tjDestroy(_jpegDecompressor);
 
+	
+
 		//load texture
 		glBindTexture(GL_TEXTURE_2D, tex);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -93,7 +102,44 @@ void idle()
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, buffer);
 		delete[] buffer;
 	}
+	SMObject PMObj(TEXT("PMObj"), sizeof(ProcessManagement));
+	double TimeStamp;
+	__int64 Frequency, Counter;
+	int Shutdown = 0x00;
+
+	QueryPerformanceFrequency((LARGE_INTEGER*)&Frequency);
+
+	PMObj.SMCreate();
+	PMObj.SMAccess();
+
+	ProcessManagement* PMData = (ProcessManagement*)PMObj.pData;
+
+	QueryPerformanceFrequency((LARGE_INTEGER*)&Counter);
+	TimeStamp = (double)Counter / (double)Frequency * 1000;
+	if (PMData->Heartbeat.Flags.Camera == 0) {
+		PMData->ShutdownCounter++;
+	}
+	if (PMData->Heartbeat.Flags.Camera == 1) {
+
+		PMData->Heartbeat.Flags.Camera = 0;
+		PMData->ShutdownCounter = 0;
+	}
+
+	
+
+	//Console::WriteLine("Camera Time Stamp : {0,12:F3} {1,12:X2}", TimeStamp, Shutdown);
+	Console::WriteLine("{0}", PMData->ShutdownCounter);
+	//Console::WriteLine(PMData->Shutdown.Status);
+	//Console::WriteLine("{0}", PMData->LifeCounter);
+	//Thread::Sleep(25);
+	if (PMData->ShutdownCounter > 100)
+		exit(0);
+	if (PMData->Shutdown.Status == 1)
+		exit(0);
+	if (_kbhit())
+		exit(0);
 
 	display();
+	
 }
 

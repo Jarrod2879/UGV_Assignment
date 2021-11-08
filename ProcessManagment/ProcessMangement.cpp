@@ -17,7 +17,7 @@ using namespace System::Net::Sockets;
 using namespace System::Net;
 using namespace System::Text;
 
-#define NUM_UNITS 2
+#define NUM_UNITS 3
 
 bool IsProcessRunning(const char* processName);
 void StartProcesses();
@@ -27,7 +27,7 @@ void checkHeartbeats(ProcessManagement* PMSMptr);
 TCHAR Units[10][20] = //
 {
 	TEXT("GPS.exe"),
-	//TEXT("Camera.exe"),
+	TEXT("Camera.exe"),
 	//TEXT("Display.exe"),
 	TEXT("LASER.exe"),
 	TEXT("VehicleControl.exe"),
@@ -52,6 +52,9 @@ int main()
 		checkHeartbeats(PMSMptr);
 		if (_kbhit()) break;
 	}
+	PMSMptr->Shutdown.Status = 1;
+	Sleep(200);
+	PMSMptr->Shutdown.Status = 1;
 	return 0;
 }
 
@@ -99,20 +102,52 @@ void StartProcesses()
 	}
 }
 
-int counter = 0;
+int gpscounter = 0;
+int lasercounter = 0;
+int cameracounter = 0;
 
 void checkHeartbeats(ProcessManagement* PMSMptr)
 {
+	//GPS
 	if (PMSMptr->Heartbeat.Flags.GPS == 0) {
 		PMSMptr->Heartbeat.Flags.GPS = 1;
-		counter = 0;
+		gpscounter = 0;
 
 	}
 	else {
-		counter++;
-		if (counter > 100000) {
+		gpscounter++;
+		if (gpscounter > 100000) {
 			Console::WriteLine("An Error has occured");
 		}
 	}
+
+	//Laser
+	if (PMSMptr->Heartbeat.Flags.Laser == 0) {
+		PMSMptr->Heartbeat.Flags.Laser = 1;
+		lasercounter = 0;
+
+	}
+	else {
+		lasercounter++;
+		if (lasercounter > 10000) {
+			//PMSMptr->Shutdown.Status = 1;
+			//exit(0);
+		}
+	}
+
+	//Camera
+	if (PMSMptr->Heartbeat.Flags.Camera == 0) {
+		PMSMptr->Heartbeat.Flags.Camera = 1;
+		cameracounter = 0;
+
+	}
+	else {
+		cameracounter++;
+		if (cameracounter > 10000) {
+			PMSMptr->Shutdown.Status = 1;
+			exit(0);
+		}
+	}
+
 }
 
